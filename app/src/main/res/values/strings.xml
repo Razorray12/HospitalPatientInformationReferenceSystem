@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Hospital Patient Information Reference System</string>
+    <string name="auth">Авторизация</string>
+    <string name="login">Войти</string>
+    <string name="password">Пароль</string>
+    <string name="email">Эл.почта</string>
+    <string name="register"><u>Зарегистрироваться</u></string>
+    <string name="register1">Зарегистрироваться</string>
+    <string name="noacc">Еще нет аккаунта?</string>
+    <string name="registration">Регистрация</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="middle_name">Отчество</string>
+    <string name="experience">Стаж</string>
+    <string name="specialization">Специализация</string>
+    <string name="profession">Должность</string>
+    <string name="nurse">Медсестра</string>
+    <string name="doctor">Доктор</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+</resources>
