@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/background2"
     android:paddingBottom="16dp"
-    android:paddingTop="5dp">
+    android:paddingTop="5dp"
+    android:focusableInTouchMode="true">
 
     <EditText
         android:id="@+id/editTextTextEmailAddress"
@@ -15,6 +16,9 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_edittext"
         android:hint="@string/email"
+        android:textCursorDrawable="@drawable/custom_cursor"
+        android:textColor="@color/main"
+        android:textColorHint="@color/hint"
         android:inputType="textEmailAddress"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
@@ -30,6 +34,9 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_edittext"
         android:hint="@string/password"
+        android:textCursorDrawable="@drawable/custom_cursor"
+        android:textColor="@color/main"
+        android:textColorHint="@color/hint"
         android:inputType="textPassword"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
@@ -44,6 +51,7 @@
         android:layout_height="50dp"
         android:backgroundTint="@color/main"
         android:text="@string/register1"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
