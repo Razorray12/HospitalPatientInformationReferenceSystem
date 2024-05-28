@@ -1,13 +1,17 @@
 package com.example.hospitalpatient.Activities;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.hospitalpatient.Fragments.RegisterDialogFragment;
 import com.example.hospitalpatient.R;
@@ -22,10 +26,21 @@ public class RegistrationActivity extends AppCompatActivity {
     private CheckBox checkBoxNurse;
     private CheckBox checkBoxDoctor;
 
+    private boolean alreadyShownToast = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
+        ConstraintLayout RegistrationFocusLayout = findViewById(R.id.registration_activity);
+        RegistrationFocusLayout.setOnClickListener(view -> {
+            RegistrationFocusLayout.clearFocus();
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        });
+
 
         editTextFirstName = findViewById(R.id.editTextTextFirstName);
         editTextLastName = findViewById(R.id.editTextTextLastName);
@@ -44,27 +59,36 @@ public class RegistrationActivity extends AppCompatActivity {
             String specialization = editTextSpecialization.getText().toString().trim();
 
             if (firstName.isEmpty() || lastName.isEmpty() || experience.isEmpty() || middleName.isEmpty()) {
-                Toast.makeText(RegistrationActivity.this, "Заполните все обязательные поля!", Toast.LENGTH_SHORT).show();
+                if (!alreadyShownToast) {
+                    Toast.makeText(RegistrationActivity.this, "Заполните все обязательные поля!", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+                    alreadyShownToast = true;
+                }
                 return;
             }
 
-            String userType = "";
-            if (checkBoxNurse.isChecked() && checkBoxDoctor.isChecked()) {
-                Toast.makeText(RegistrationActivity.this, "Выберите что-то одно!", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (checkBoxNurse.isChecked()) {
+            String userType;
+            if (checkBoxNurse.isChecked()) {
                 userType = "Медсестра";
                 editTextSpecialization.setEnabled(false);
                 editTextSpecialization.setText("");
             } else if (checkBoxDoctor.isChecked()) {
                 userType = "Доктор";
                 if (TextUtils.isEmpty(specialization)) {
-                    Toast.makeText(RegistrationActivity.this, "Укажите специализацию!", Toast.LENGTH_SHORT).show();
+                    if (!alreadyShownToast) {
+                        Toast.makeText(RegistrationActivity.this, "Укажите специализацию!", Toast.LENGTH_SHORT).show();
+                        new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+                        alreadyShownToast = true;
+                    }
                     return;
                 }
                 editTextSpecialization.setEnabled(true);
             } else {
-                Toast.makeText(RegistrationActivity.this, "Выберите тип пользователя!", Toast.LENGTH_SHORT).show();
+                if (!alreadyShownToast) {
+                    Toast.makeText(RegistrationActivity.this, "Выберите тип пользователя!", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+                    alreadyShownToast = true;
+                }
                 return;
             }
 

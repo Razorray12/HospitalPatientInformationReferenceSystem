@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_dialog_registration"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background2"
@@ -47,7 +48,7 @@
 
     <Button
         android:id="@+id/onLoginActivity"
-        android:layout_width="290dp"
+        android:layout_width="190dp"
         android:layout_height="50dp"
         android:backgroundTint="@color/main"
         android:text="@string/register1"

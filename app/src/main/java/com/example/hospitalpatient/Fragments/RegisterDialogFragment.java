@@ -1,22 +1,25 @@
 package com.example.hospitalpatient.Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.hospitalpatient.Activities.LoginActivity;
@@ -28,10 +31,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 public class RegisterDialogFragment extends DialogFragment {
 
     private EditText emailEditText;
     private EditText passwordEditText;
+
+    private boolean alreadyShownToast = false;
 
     @NonNull
     @Override
@@ -43,6 +50,16 @@ public class RegisterDialogFragment extends DialogFragment {
 
         emailEditText = view.findViewById(R.id.editTextTextEmailAddress);
         passwordEditText = view.findViewById(R.id.editTextTextPassword);
+
+
+        ConstraintLayout registrationDialogFocusLayout = view.findViewById(R.id.fragment_dialog_registration);
+        registrationDialogFocusLayout.setOnClickListener(v -> {
+            registrationDialogFocusLayout.clearFocus();
+
+            InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(registrationDialogFocusLayout.getWindowToken(), 0);
+        });
+
 
         Button buttonOnLoginActivity = view.findViewById(R.id.onLoginActivity);
         buttonOnLoginActivity.setOnClickListener(v -> registerUser());
@@ -90,16 +107,28 @@ public class RegisterDialogFragment extends DialogFragment {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(requireContext(), "Заполните все поля!", Toast.LENGTH_SHORT).show();
+            if (!alreadyShownToast) {
+                Toast.makeText(requireContext(), "Заполните все поля!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+                alreadyShownToast = true;
+            }
             return;
         }
         if (password.length()<6){
-            Toast.makeText(requireContext(), "Пароль должен быть не менее 6 символов!", Toast.LENGTH_SHORT).show();
+            if (!alreadyShownToast) {
+                Toast.makeText(requireContext(), "Пароль должен быть не менее 6 символов!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+                alreadyShownToast = true;
+            }
             return;
         }
 
         if (!isValidEmail(email)) {
-            Toast.makeText(requireContext(), "Введите корректный email адрес!", Toast.LENGTH_SHORT).show();
+            if (!alreadyShownToast) {
+                Toast.makeText(requireContext(), "Введите корректный email адрес!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+                alreadyShownToast = true;
+            }
             return;
         }
 
@@ -110,14 +139,18 @@ public class RegisterDialogFragment extends DialogFragment {
                         if (firebaseUser != null) {
                             String userId = firebaseUser.getUid();
                             Bundle args = getArguments();
-                            saveUserToDataBase(userId, args.getString("firstName"), args.getString("lastName"), args.getString("middleName"),
+                            saveUserToDataBase(userId, Objects.requireNonNull(args).getString("firstName"), args.getString("lastName"), args.getString("middleName"),
                                     args.getString("experience"), args.getString("specialization"));
                             Intent intent = new Intent(requireContext(), LoginActivity.class);
                             startActivity(intent);
                             requireActivity().finish();
                         }
                     } else {
-                        Toast.makeText(requireContext(), "Пользователь уже зарегистрирован!", Toast.LENGTH_SHORT).show();
+                        if (!alreadyShownToast) {
+                            Toast.makeText(requireContext(), "Пользователь уже зарегистрирован!", Toast.LENGTH_SHORT).show();
+                            new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+                            alreadyShownToast = true;
+                        }
                     }
                 });
     }
