@@ -7,4 +7,5 @@
     <color name="main_focused">#BAB4B4</color>
     <color name="highlights">#5735B6F1</color>
     <color name="handles">#353E5D</color>
+    <color name="focus">#54FFFFFF</color>
 </resources>

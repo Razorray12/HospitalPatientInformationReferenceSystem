@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,8 @@ import java.util.Objects;
 
 public class RegisterDialogFragment extends DialogFragment {
 
+    ConstraintLayout registrationDialogFocusLayout;
+
     private EditText emailEditText;
     private EditText passwordEditText;
 
@@ -52,7 +55,7 @@ public class RegisterDialogFragment extends DialogFragment {
         passwordEditText = view.findViewById(R.id.editTextTextPassword);
 
 
-        ConstraintLayout registrationDialogFocusLayout = view.findViewById(R.id.fragment_dialog_registration);
+        registrationDialogFocusLayout = view.findViewById(R.id.fragment_dialog_registration);
         registrationDialogFocusLayout.setOnClickListener(v -> {
             registrationDialogFocusLayout.clearFocus();
 
@@ -90,9 +93,12 @@ public class RegisterDialogFragment extends DialogFragment {
         super.onStart();
         if (getDialog() != null && getDialog().getWindow() != null) {
             Window window = getDialog().getWindow();
+
             window.setWindowAnimations(R.style.RoundedCornersDialog);
             WindowManager.LayoutParams params = window.getAttributes();
+
             params.dimAmount = 0.7f;
+
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             window.setAttributes(params);
         }
@@ -100,12 +106,14 @@ public class RegisterDialogFragment extends DialogFragment {
 
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
         return email.matches(emailRegex);
     }
 
     private void registerUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
+
         if (email.isEmpty() || password.isEmpty()) {
             if (!alreadyShownToast) {
                 Toast.makeText(requireContext(), "Заполните все поля!", Toast.LENGTH_SHORT).show();
@@ -137,11 +145,21 @@ public class RegisterDialogFragment extends DialogFragment {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                         if (firebaseUser != null) {
+                            ProgressBar progressBarReg = requireActivity().findViewById(R.id.progressBarRegist);
+                            View viewFocusReg = requireActivity().findViewById(R.id.viewFocusRegistr);
+
+                            progressBarReg.setVisibility(View.VISIBLE);
+                            viewFocusReg.setVisibility(View.VISIBLE);
+                            registrationDialogFocusLayout.setVisibility(View.INVISIBLE);
+
                             String userId = firebaseUser.getUid();
                             Bundle args = getArguments();
+
                             saveUserToDataBase(userId, Objects.requireNonNull(args).getString("firstName"), args.getString("lastName"), args.getString("middleName"),
                                     args.getString("experience"), args.getString("specialization"));
                             Intent intent = new Intent(requireContext(), LoginActivity.class);
+
+                            FirebaseAuth.getInstance().signOut();
                             startActivity(intent);
                             requireActivity().finish();
                         }
@@ -173,5 +191,4 @@ public class RegisterDialogFragment extends DialogFragment {
         }
     }
 }
-
 

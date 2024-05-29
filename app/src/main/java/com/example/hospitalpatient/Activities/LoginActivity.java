@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,9 +46,10 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mAuth.signOut();
+
         if (currentUser != null) {
             Intent intent = new Intent(this, MainActivity.class);
+
             startActivity(intent);
             finish();
         }
@@ -87,8 +90,15 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
+                    ProgressBar progressBar = findViewById(R.id.progressBarLogin);
+                    View viewFocus = findViewById(R.id.viewFocus);
+
+                    viewFocus.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
+
                     if (task.isSuccessful()) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
                         startActivity(intent);
                         finish();
                     } else {
@@ -97,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (!alreadyShownToast) {
                                 Toast.makeText(LoginActivity.this, "Неверный логин или пароль!", Toast.LENGTH_SHORT).show();
                                 new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+
                                 alreadyShownToast = true;
                             }
                         }
@@ -104,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (!alreadyShownToast) {
                                 Toast.makeText(LoginActivity.this, "Ошибка входа: " + errorMessage, Toast.LENGTH_SHORT).show();
                                 new Handler().postDelayed(() -> alreadyShownToast = false, 3000);
+
                                 alreadyShownToast = true;
                             }
                         }

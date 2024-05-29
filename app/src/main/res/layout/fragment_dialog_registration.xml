@@ -26,7 +26,8 @@
         app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintWidth_percent="0.9"
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/editTextTextPassword"
@@ -44,7 +45,8 @@
         app:layout_constraintBottom_toTopOf="@+id/onLoginActivity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintWidth_percent="0.9"
+        tools:ignore="Autofill" />
 
     <Button
         android:id="@+id/onLoginActivity"
@@ -70,6 +72,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.945"
         app:srcCompat="@drawable/close1"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
