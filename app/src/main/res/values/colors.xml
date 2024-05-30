@@ -8,4 +8,7 @@
     <color name="highlights">#5735B6F1</color>
     <color name="handles">#353E5D</color>
     <color name="focus">#54FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="blue">#BDE6EA</color>
+    <color name="search">#A1353E5D</color>
 </resources>

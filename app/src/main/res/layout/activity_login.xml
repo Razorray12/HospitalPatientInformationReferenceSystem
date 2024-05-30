@@ -102,6 +102,7 @@
         android:layout_marginTop="4dp"
         android:fontFamily="@font/open_sans_light_italic"
         android:text="@string/noacc"
+        android:textColor="@color/main"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
