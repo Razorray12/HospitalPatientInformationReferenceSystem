@@ -7,19 +7,21 @@ public class Patient {
     private String firstName;
     private String lastName;
     private String middleName;
-    private Date birthDate;
+    private String birthDate;
     private String phoneNumber;
     private String diagnosis;
     private String room;
-    private Date admissionDate;
+    private String sex;
+    private String admissionDate;
     private ArrayList<String> medications;
     private ArrayList<String> allergies;
     private VitalSigns vitalSigns;
+    private String mainDoctor;
 
     public Patient(String firstName, String lastName, String middleName,
-                   Date birthDate, String phoneNumber, String diagnosis,
-                   String room, Date admissionDate,ArrayList<String> allergies,
-                   ArrayList<String> medications, VitalSigns vitalSigns) {
+                   String birthDate, String phoneNumber, String diagnosis,
+                   String room, String admissionDate,ArrayList<String> allergies,
+                   ArrayList<String> medications, VitalSigns vitalSigns, String sex, String mainDoctor) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
@@ -31,7 +33,10 @@ public class Patient {
         this.medications = medications;
         this.allergies = allergies;
         this.vitalSigns = vitalSigns;
+        this.sex = sex;
+        this.mainDoctor = mainDoctor;
     }
+    public Patient() {}
 
     public String getFirstName() {
         return firstName;
@@ -57,11 +62,9 @@ public class Patient {
         this.middleName = middleName;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
-    }
+    public String  getBirthDate() { return birthDate; }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -89,11 +92,11 @@ public class Patient {
         this.room = room;
     }
 
-    public Date getAdmissionDate() {
+    public String getAdmissionDate() {
         return admissionDate;
     }
 
-    public void setAdmissionDate(Date admissionDate) {
+    public void setAdmissionDate(String admissionDate) {
         this.admissionDate = admissionDate;
     }
 
@@ -120,4 +123,12 @@ public class Patient {
     public void setVitalSigns(VitalSigns vitalSigns) {
         this.vitalSigns = vitalSigns;
     }
+
+    public String getSex() { return sex; }
+
+    public void setSex(String sex) { this.sex = sex; }
+
+    public String getMainDoctor() { return mainDoctor; }
+
+    public void setMainDoctor(String mainDoctor) { this.mainDoctor = mainDoctor; }
 }

@@ -5,8 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Fragments.SearchFragment">
-
+    <include layout="@layout/test"
+        android:visibility="visible"/>
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_patient"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/white"/>
 </LinearLayout>

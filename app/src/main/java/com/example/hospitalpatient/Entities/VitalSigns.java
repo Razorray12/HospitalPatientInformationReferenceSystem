@@ -17,6 +17,7 @@ public class VitalSigns {
         this.oxygenSaturation = oxygenSaturation;
         this.bloodGlucose = bloodGlucose;
     }
+    public VitalSigns() {}
 
     public String getTemperature() {
        return temperature;

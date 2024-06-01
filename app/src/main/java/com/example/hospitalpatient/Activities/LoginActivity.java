@@ -46,10 +46,8 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
         if (currentUser != null) {
             Intent intent = new Intent(this, MainActivity.class);
-
             startActivity(intent);
             finish();
         }
@@ -102,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
+                        viewFocus.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
                         String errorMessage = Objects.requireNonNull(task.getException()).getMessage();
                         if (Objects.requireNonNull(errorMessage).contains("incorrect") || errorMessage.contains("6") || errorMessage.contains("format")) {
                             if (!alreadyShownToast) {
