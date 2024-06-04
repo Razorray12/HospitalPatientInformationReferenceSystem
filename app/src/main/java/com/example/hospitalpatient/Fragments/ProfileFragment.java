@@ -306,9 +306,10 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ((MainActivity) requireActivity()).setToolbarSaveButtonListener(() -> {
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) requireActivity()).setToolbarSaveButtonListener(v ->  {
 
             String email = emailEditText.getText().toString();
             if (!isValidEmail(email)) {
@@ -367,12 +368,6 @@ public class ProfileFragment extends Fragment {
             ((MainActivity) requireActivity()).showEditButton();
         });
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//
-//    }
 
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";

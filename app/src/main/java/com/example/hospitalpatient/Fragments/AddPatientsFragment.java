@@ -84,15 +84,11 @@ public class AddPatientsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_close_edit) {
-            Fragment currentFragment = requireActivity().getSupportFragmentManager().findFragmentByTag("add_patient_fragment");
-            SearchFragment searchFragment = (SearchFragment) requireActivity().getSupportFragmentManager().findFragmentByTag("search_fragment");
-
-            requireActivity().getSupportFragmentManager().beginTransaction().hide(Objects.requireNonNull(currentFragment)).show(Objects.requireNonNull(searchFragment)).commit();
-
-            ((MainActivity) requireActivity()).closeSaveButton();
+        if (id == R.id.action_close_edit1) {
+            ((MainActivity) requireActivity()).closeSaveButton1();
             ((MainActivity) requireActivity()).setTextForSearch();
-
+            ((MainActivity) requireActivity()).showSearchView();
+            ((MainActivity) requireActivity()).closeCloseEditButton1();
 
             return true;
         }
@@ -100,18 +96,11 @@ public class AddPatientsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ((MainActivity) requireActivity()).setToolbarSaveButtonListener(() -> {
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) requireActivity()).setToolbarSaveButtonListener1(v ->  {
             Toast.makeText(getContext(),"lox", Toast.LENGTH_SHORT).show();
+            ((MainActivity) requireActivity()).closeSaveButton1();
         });
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        ((MainActivity) requireActivity()).setToolbarSaveButtonListener(() -> {
-//            Toast.makeText(getContext(),"lox", Toast.LENGTH_SHORT).show();
-//        });
-//    }
 }

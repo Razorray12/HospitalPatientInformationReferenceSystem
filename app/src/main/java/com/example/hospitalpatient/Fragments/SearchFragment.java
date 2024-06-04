@@ -9,13 +9,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hospitalpatient.Activities.MainActivity;
 import com.example.hospitalpatient.Adapters.PatientAdapter;
 import com.example.hospitalpatient.Entities.Patient;
 import com.example.hospitalpatient.R;

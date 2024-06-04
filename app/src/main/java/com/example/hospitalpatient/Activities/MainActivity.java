@@ -33,12 +33,13 @@ public class MainActivity extends AppCompatActivity {
     private SearchFragment searchFragment;
     private ProfileFragment profileFragment;
     private AddPatientsFragment addPatientFragment;
-    private ToolbarSaveButtonListener toolbarSaveButtonListener;
     private Menu menu;
     private SelectedPatientsFragment selectedPatientsFragment;
-    SearchView searchView;
-    TextView nameFragment;
-    AppCompatImageButton saveButton;
+    private SearchView searchView;
+    private TextView nameFragment;
+    private AppCompatImageButton saveButton;
+    private AppCompatImageButton saveButton1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         searchView = findViewById(R.id.action_search);
         saveButton = findViewById(R.id.save_button);
+        saveButton1 = findViewById(R.id.save_button1);
 
         int hintColor = ContextCompat.getColor(this, R.color.search);
         searchView.setQueryHint(Html.fromHtml("<font color = \""+ hintColor + "\">" + getResources().getString(R.string.search) + "</font>"));
@@ -85,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
         patientsImageButton.setOnClickListener(v -> {
             saveButton.setVisibility(View.GONE);
+            saveButton1.setVisibility(View.GONE);
             patientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.white));
             addedPatientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
             profileImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
             nameFragment.setText("Пациенты");
-            saveButton.setVisibility(View.GONE);
             searchView.setVisibility(View.VISIBLE);
             if (!(currentFragment instanceof SearchFragment)) {
                 getSupportFragmentManager().beginTransaction().hide(currentFragment).show(searchFragment).commit();
@@ -147,11 +149,13 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItemEdit = menu.findItem(R.id.action_edit);
         MenuItem menuItemAdd = menu.findItem(R.id.action_add);
         MenuItem menuItemClose = menu.findItem(R.id.action_close_edit);
+        MenuItem menuItemClose1 = menu.findItem(R.id.action_close_edit1);
 
         if (currentFragment instanceof SearchFragment) {
             menuItemAdd.setVisible(true);
             menuItemEdit.setVisible(false);
             menuItemClose.setVisible(false);
+            menuItemClose1.setVisible(false);
 
         } else if (currentFragment instanceof ProfileFragment) {
             menuItemAdd.setVisible(false);
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (currentFragment instanceof  AddPatientsFragment) {
             menuItemAdd.setVisible(false);
-            menuItemClose.setVisible(true);
+            menuItemClose1.setVisible(true);
             menuItemEdit.setVisible(false);
         }
 
@@ -181,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_add) {
             searchView.setVisibility(View.GONE);
-            saveButton.setVisibility(View.VISIBLE);
+            saveButton1.setVisibility(View.VISIBLE);
             nameFragment.setText("Добавление");
             if (!(currentFragment instanceof AddPatientsFragment)) {
                 if (addPatientFragment.isAdded()) {
@@ -228,18 +232,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public interface ToolbarSaveButtonListener {
-        void onSaveButtonClicked();
+    public void setToolbarSaveButtonListener(View.OnClickListener listener) {
+        saveButton.setOnClickListener(listener);
     }
 
-    public void setToolbarSaveButtonListener(ToolbarSaveButtonListener listener) {
-        this.toolbarSaveButtonListener = listener;
-        saveButton.setOnClickListener(v -> {
-            if (toolbarSaveButtonListener != null) {
-                toolbarSaveButtonListener.onSaveButtonClicked();
-            }
-        });
-
+    public void setToolbarSaveButtonListener1(View.OnClickListener listener) {
+        saveButton1.setOnClickListener(listener);
     }
 
     public void showSaveButton() {
@@ -247,6 +245,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void closeSaveButton() { saveButton.setVisibility(View.GONE); }
+
+    public void closeSaveButton1() { saveButton1.setVisibility(View.GONE); }
 
     public void showCloseEditButton() {
             MenuItem item = menu.findItem(R.id.action_close_edit);
@@ -256,6 +256,18 @@ public class MainActivity extends AppCompatActivity {
     public void closeCloseEditButton() {
         MenuItem item = menu.findItem(R.id.action_close_edit);
         item.setVisible(false);
+    }
+
+    public void closeCloseEditButton1() {
+        if (!(currentFragment instanceof SearchFragment)) {
+            getSupportFragmentManager().beginTransaction().hide(currentFragment).show(searchFragment).commit();
+            currentFragment = searchFragment;
+            invalidateOptionsMenu();
+        }
+    }
+
+    public void showSearchView() {
+        searchView.setVisibility(View.VISIBLE);
     }
 
     public void showEditButton() {
