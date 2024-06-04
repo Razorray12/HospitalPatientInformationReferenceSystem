@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hospitalpatient.Activities.MainActivity;
 import com.example.hospitalpatient.Adapters.PatientAdapter;
 import com.example.hospitalpatient.Entities.Patient;
 import com.example.hospitalpatient.R;
@@ -39,6 +42,7 @@ public class SearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,12 +86,14 @@ public class SearchFragment extends Fragment {
                     shimmerView5.stopShimmer();
                     shimmerLinearLayout.setVisibility(View.GONE);
                 }, 2000);
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
 
         return view;
     }
@@ -116,5 +122,4 @@ public class SearchFragment extends Fragment {
         patientAdapter.setPatients(patients);
         patientAdapter.notifyDataSetChanged();
     }
-
 }

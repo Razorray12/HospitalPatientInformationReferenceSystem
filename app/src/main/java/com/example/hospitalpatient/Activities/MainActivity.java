@@ -3,10 +3,14 @@ package com.example.hospitalpatient.Activities;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -15,7 +19,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.hospitalpatient.Fragments.AddPatientsFragment;
+import com.example.hospitalpatient.Fragments.ProfileFragment;
 import com.example.hospitalpatient.Fragments.SearchFragment;
+import com.example.hospitalpatient.Fragments.SelectedPatientsFragment;
 import com.example.hospitalpatient.R;
 
 import java.util.Objects;
@@ -23,7 +30,15 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private Fragment currentFragment;
+    private SearchFragment searchFragment;
+    private ProfileFragment profileFragment;
+    private AddPatientsFragment addPatientFragment;
+    private ToolbarSaveButtonListener toolbarSaveButtonListener;
+    private Menu menu;
+    private SelectedPatientsFragment selectedPatientsFragment;
     SearchView searchView;
+    TextView nameFragment;
+    AppCompatImageButton saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +54,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
+
+        nameFragment = toolbar.findViewById(R.id.name_fragment);
+
         searchView = findViewById(R.id.action_search);
+        saveButton = findViewById(R.id.save_button);
 
         int hintColor = ContextCompat.getColor(this, R.color.search);
         searchView.setQueryHint(Html.fromHtml("<font color = \""+ hintColor + "\">" + getResources().getString(R.string.search) + "</font>"));
@@ -48,12 +67,136 @@ public class MainActivity extends AppCompatActivity {
         searchEditText.setTextColor(getResources().getColor(R.color.handles));
 
         setupSearchView();
+
+        searchFragment = new SearchFragment();
+        profileFragment = new ProfileFragment();
+        selectedPatientsFragment = new SelectedPatientsFragment();
+        addPatientFragment = new AddPatientsFragment();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, searchFragment, "search_fragment").commit();
+
+        currentFragment = searchFragment;
+
+        AppCompatImageButton patientsImageButton = findViewById(R.id.patients);
+        AppCompatImageButton addedPatientsImageButton = findViewById(R.id.added_patients);
+        AppCompatImageButton profileImageButton = findViewById(R.id.profile);
+        patientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.white));
+
+
+        patientsImageButton.setOnClickListener(v -> {
+            saveButton.setVisibility(View.GONE);
+            patientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.white));
+            addedPatientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
+            profileImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
+            nameFragment.setText("Пациенты");
+            saveButton.setVisibility(View.GONE);
+            searchView.setVisibility(View.VISIBLE);
+            if (!(currentFragment instanceof SearchFragment)) {
+                getSupportFragmentManager().beginTransaction().hide(currentFragment).show(searchFragment).commit();
+                currentFragment = searchFragment;
+                invalidateOptionsMenu();
+            }
+        });
+
+        addedPatientsImageButton.setOnClickListener(v -> {
+            saveButton.setVisibility(View.GONE);
+            addedPatientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.white));
+            patientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
+            profileImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
+            saveButton.setVisibility(View.GONE);
+            searchView.setVisibility(View.VISIBLE);
+            nameFragment.setText("Выбранные");
+            if (!(currentFragment instanceof SelectedPatientsFragment)) {
+                if (selectedPatientsFragment.isAdded()) {
+                    getSupportFragmentManager().beginTransaction().hide(currentFragment).show(selectedPatientsFragment).commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction().hide(currentFragment).add(R.id.fragment_container, selectedPatientsFragment, "selected_patients_fragment").commit();
+                }
+                currentFragment = selectedPatientsFragment;
+                invalidateOptionsMenu();
+            }
+        });
+
+        profileImageButton.setOnClickListener(v -> {
+            saveButton.setVisibility(View.GONE);
+            showEditButton();
+            profileImageButton.setColorFilter(ContextCompat.getColor(this,R.color.white));
+            patientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
+            addedPatientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
+            closeCloseEditButton();
+            nameFragment.setText("Профиль");
+            searchView.setVisibility(View.GONE);
+
+            if (!(currentFragment instanceof ProfileFragment)) {
+                if (profileFragment.isAdded()) {
+                    getSupportFragmentManager().beginTransaction().hide(currentFragment).show(profileFragment).commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction().hide(currentFragment).add(R.id.fragment_container, profileFragment, "profile_fragment").commit();
+                }
+                currentFragment = profileFragment;
+                invalidateOptionsMenu();
+            }
+            if (profileFragment != null && profileFragment.isVisible()) {
+                profileFragment.onHideEditText();
+            }
+        });
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItemEdit = menu.findItem(R.id.action_edit);
+        MenuItem menuItemAdd = menu.findItem(R.id.action_add);
+        MenuItem menuItemClose = menu.findItem(R.id.action_close_edit);
+
+        if (currentFragment instanceof SearchFragment) {
+            menuItemAdd.setVisible(true);
+            menuItemEdit.setVisible(false);
+            menuItemClose.setVisible(false);
+
+        } else if (currentFragment instanceof ProfileFragment) {
+            menuItemAdd.setVisible(false);
+            menuItemEdit.setVisible(true);
+        } else if (currentFragment instanceof SelectedPatientsFragment){
+            menuItemAdd.setVisible(true);
+            menuItemEdit.setVisible(false);
+        }
+        else if (currentFragment instanceof  AddPatientsFragment) {
+            menuItemAdd.setVisible(false);
+            menuItemClose.setVisible(true);
+            menuItemEdit.setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.main_menu,menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_add) {
+            searchView.setVisibility(View.GONE);
+            saveButton.setVisibility(View.VISIBLE);
+            nameFragment.setText("Добавление");
+            if (!(currentFragment instanceof AddPatientsFragment)) {
+                if (addPatientFragment.isAdded()) {
+                    getSupportFragmentManager().beginTransaction().hide(currentFragment).show(addPatientFragment).commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction().hide(currentFragment).add(R.id.fragment_container, addPatientFragment, "add_patient_fragment").commit();
+                }
+                currentFragment = addPatientFragment;
+                invalidateOptionsMenu();
+            }
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupSearchView() {
@@ -61,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                SearchFragment searchFragment = (SearchFragment) getSupportFragmentManager().findFragmentById(R.id.patientsListFragment);
+                SearchFragment searchFragment = (SearchFragment) getSupportFragmentManager().findFragmentByTag("search_fragment");
 
                 if (searchFragment != null) {
                     searchFragment.onQueryTextSubmit(query);
@@ -76,11 +219,51 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         searchView.setOnCloseListener(() -> {
-            SearchFragment searchFragment = (SearchFragment) getSupportFragmentManager().findFragmentById(R.id.patientsListFragment);
+            SearchFragment searchFragment = (SearchFragment) getSupportFragmentManager().findFragmentByTag("search_fragment");
             if (searchFragment != null) {
                 searchFragment.showAllPatients();
             }
             return false;
         });
+
+    }
+
+    public interface ToolbarSaveButtonListener {
+        void onSaveButtonClicked();
+    }
+
+    public void setToolbarSaveButtonListener(ToolbarSaveButtonListener listener) {
+        this.toolbarSaveButtonListener = listener;
+        saveButton.setOnClickListener(v -> {
+            if (toolbarSaveButtonListener != null) {
+                toolbarSaveButtonListener.onSaveButtonClicked();
+            }
+        });
+
+    }
+
+    public void showSaveButton() {
+        saveButton.setVisibility(View.VISIBLE);
+    }
+
+    public void closeSaveButton() { saveButton.setVisibility(View.GONE); }
+
+    public void showCloseEditButton() {
+            MenuItem item = menu.findItem(R.id.action_close_edit);
+            item.setVisible(true);
+    }
+
+    public void closeCloseEditButton() {
+        MenuItem item = menu.findItem(R.id.action_close_edit);
+        item.setVisible(false);
+    }
+
+    public void showEditButton() {
+        MenuItem item = menu.findItem(R.id.action_edit);
+        item.setVisible(true);
+    }
+
+    public void setTextForSearch() {
+        nameFragment.setText("Пациенты");
     }
 }

@@ -32,6 +32,7 @@
             android:visibility="gone"/>
 
         <TextView
+            android:id="@+id/name_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/handles"
@@ -48,14 +49,6 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <fragment
-            android:id="@+id/patientsListFragment"
-            android:name="com.example.hospitalpatient.Fragments.SearchFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_search"
-            />
-
     </FrameLayout>
 
         <LinearLayout
@@ -70,10 +63,10 @@
                 android:layout_width="0dp"
                 android:layout_height="65dp"
                 android:layout_weight="1"
-                android:contentDescription="@string/patients"
                 android:background="@drawable/ripple_effect"
+                android:contentDescription="@string/patients"
                 app:srcCompat="@drawable/patient_list"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded,DuplicateSpeakableTextCheck" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/added_patients"
