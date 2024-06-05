@@ -50,20 +50,20 @@ public class ProfileFragment extends Fragment {
     private String userId;
 
 
-    TextView emailTextView;
-    TextView firstNameTextView;
-    TextView lastNameTextView;
-    TextView middleNameTextView;
-    TextView experienceTextView;
-    TextView specializationTextView;
-    TextView specializationInvisibleTextView;
+    private TextView emailTextView;
+    private TextView firstNameTextView;
+    private TextView lastNameTextView;
+    private TextView middleNameTextView;
+    private TextView experienceTextView;
+    private TextView specializationTextView;
+    private TextView specializationInvisibleTextView;
 
-    EditText emailEditText;
-    EditText firstNameEditText;
-    EditText lastNameEditText;
-    EditText middleNameEditText;
-    EditText experienceEditText;
-    EditText specializationEditText;
+    private EditText emailEditText;
+    private EditText firstNameEditText;
+    private EditText lastNameEditText;
+    private EditText middleNameEditText;
+    private EditText experienceEditText;
+    private EditText specializationEditText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

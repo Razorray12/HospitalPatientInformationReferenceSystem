@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.SearchView;
@@ -20,18 +21,29 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.hospitalpatient.Fragments.AddPatientsFragment;
+import com.example.hospitalpatient.Fragments.InformationFragment;
 import com.example.hospitalpatient.Fragments.ProfileFragment;
 import com.example.hospitalpatient.Fragments.SearchFragment;
 import com.example.hospitalpatient.Fragments.SelectedPatientsFragment;
 import com.example.hospitalpatient.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
+    private boolean isDoctor = false;
+
     private Fragment currentFragment;
     private SearchFragment searchFragment;
     private ProfileFragment profileFragment;
+    private InformationFragment informationFragment;
     private AddPatientsFragment addPatientFragment;
     private Menu menu;
     private SelectedPatientsFragment selectedPatientsFragment;
@@ -39,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView nameFragment;
     private AppCompatImageButton saveButton;
     private AppCompatImageButton saveButton1;
+    private AppCompatImageButton saveButton2;
+    private AppCompatImageButton addedPatientsImageButton;
+    private AppCompatImageButton backButton;
 
 
     @Override
@@ -52,6 +67,29 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = Objects.requireNonNull(user).getUid();
+        DatabaseReference doctorsRef = FirebaseDatabase.getInstance().getReference("users/doctors");
+
+        doctorsRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    isDoctor = true;
+
+                }
+                if (!isDoctor)
+                {
+                    addedPatientsImageButton.setVisibility(View.GONE);
+                }
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
@@ -61,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         searchView = findViewById(R.id.action_search);
         saveButton = findViewById(R.id.save_button);
         saveButton1 = findViewById(R.id.save_button1);
+        saveButton2 = findViewById(R.id.save_button2);
+        backButton = toolbar.findViewById(R.id.back_button);
 
         int hintColor = ContextCompat.getColor(this, R.color.search);
         searchView.setQueryHint(Html.fromHtml("<font color = \""+ hintColor + "\">" + getResources().getString(R.string.search) + "</font>"));
@@ -71,6 +111,24 @@ public class MainActivity extends AppCompatActivity {
         setupSearchView();
 
         searchFragment = new SearchFragment();
+
+        searchFragment.setOnFragmentSwitchListener(() -> {
+            MenuItem menuItem = menu.findItem(R.id.action_add);
+            menuItem.setVisible(false);
+            backButton.setVisibility(View.VISIBLE);
+            searchView.setVisibility(View.GONE);
+            nameFragment.setText("Информация");
+            if (informationFragment == null) {
+                informationFragment = new InformationFragment();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, informationFragment).commit();
+            }
+
+            getSupportFragmentManager().beginTransaction().hide(currentFragment).show(informationFragment).commit();
+
+            currentFragment = informationFragment;
+            invalidateOptionsMenu();
+        });
+
         profileFragment = new ProfileFragment();
         selectedPatientsFragment = new SelectedPatientsFragment();
         addPatientFragment = new AddPatientsFragment();
@@ -80,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         currentFragment = searchFragment;
 
         AppCompatImageButton patientsImageButton = findViewById(R.id.patients);
-        AppCompatImageButton addedPatientsImageButton = findViewById(R.id.added_patients);
+        addedPatientsImageButton = findViewById(R.id.added_patients);
         AppCompatImageButton profileImageButton = findViewById(R.id.profile);
         patientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.white));
 
@@ -106,8 +164,8 @@ public class MainActivity extends AppCompatActivity {
             patientsImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
             profileImageButton.setColorFilter(ContextCompat.getColor(this,R.color.handles));
             saveButton.setVisibility(View.GONE);
-            searchView.setVisibility(View.VISIBLE);
-            nameFragment.setText("Выбранные");
+            searchView.setVisibility(View.GONE);
+            nameFragment.setText("Добавленные");
             if (!(currentFragment instanceof SelectedPatientsFragment)) {
                 if (selectedPatientsFragment.isAdded()) {
                     getSupportFragmentManager().beginTransaction().hide(currentFragment).show(selectedPatientsFragment).commit();
@@ -152,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItemClose1 = menu.findItem(R.id.action_close_edit1);
 
         if (currentFragment instanceof SearchFragment) {
-            menuItemAdd.setVisible(true);
+
+            menuItemAdd.setVisible(isDoctor);
             menuItemEdit.setVisible(false);
             menuItemClose.setVisible(false);
             menuItemClose1.setVisible(false);
@@ -161,13 +220,18 @@ public class MainActivity extends AppCompatActivity {
             menuItemAdd.setVisible(false);
             menuItemEdit.setVisible(true);
         } else if (currentFragment instanceof SelectedPatientsFragment){
-            menuItemAdd.setVisible(true);
+            menuItemAdd.setVisible(false);
+            menuItemAdd.setVisible(false);
             menuItemEdit.setVisible(false);
         }
         else if (currentFragment instanceof  AddPatientsFragment) {
             menuItemAdd.setVisible(false);
             menuItemClose1.setVisible(true);
             menuItemEdit.setVisible(false);
+        }
+        else if (currentFragment instanceof  InformationFragment) {
+            menuItemAdd.setVisible(false);
+            menuItemEdit.setVisible(true);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -240,13 +304,41 @@ public class MainActivity extends AppCompatActivity {
         saveButton1.setOnClickListener(listener);
     }
 
+    public void setToolbarSaveButtonListener2(View.OnClickListener listener) {
+        saveButton2.setOnClickListener(listener);
+    }
+
+    public void setToolbarBackButtonListener(View.OnClickListener listener) {
+        backButton.setOnClickListener(listener);
+    }
+
+    public void closeFragmentInformation() {
+        if (!(currentFragment instanceof SearchFragment)) {
+            getSupportFragmentManager().beginTransaction().hide(currentFragment).show(searchFragment).commit();
+            currentFragment = searchFragment;
+            invalidateOptionsMenu();
+        }
+    }
+
     public void showSaveButton() {
         saveButton.setVisibility(View.VISIBLE);
+    }
+
+    public void showBackButton() {
+        backButton.setVisibility(View.VISIBLE);
+    }
+
+    public void closeBackButton() {
+        backButton.setVisibility(View.GONE);
     }
 
     public void closeSaveButton() { saveButton.setVisibility(View.GONE); }
 
     public void closeSaveButton1() { saveButton1.setVisibility(View.GONE); }
+
+    public void closeSaveButton2() { saveButton2.setVisibility(View.GONE); }
+
+    public void showSaveButton2() { saveButton2.setVisibility(View.VISIBLE); }
 
     public void showCloseEditButton() {
             MenuItem item = menu.findItem(R.id.action_close_edit);
@@ -258,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
         item.setVisible(false);
     }
 
-    public void closeCloseEditButton1() {
+    public void closeFragmentAdd() {
         if (!(currentFragment instanceof SearchFragment)) {
             getSupportFragmentManager().beginTransaction().hide(currentFragment).show(searchFragment).commit();
             currentFragment = searchFragment;
@@ -277,5 +369,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void setTextForSearch() {
         nameFragment.setText("Пациенты");
+    }
+
+    public void setText(String text) {
+        nameFragment.setText(text);
     }
 }

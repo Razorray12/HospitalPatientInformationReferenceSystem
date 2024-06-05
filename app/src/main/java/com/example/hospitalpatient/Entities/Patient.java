@@ -1,9 +1,7 @@
 package com.example.hospitalpatient.Entities;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class Patient {
+    private String id;
     private String firstName;
     private String lastName;
     private String middleName;
@@ -13,15 +11,16 @@ public class Patient {
     private String room;
     private String sex;
     private String admissionDate;
-    private ArrayList<String> medications;
-    private ArrayList<String> allergies;
+    private String medications;
+    private String allergies;
     private VitalSigns vitalSigns;
     private String mainDoctor;
 
-    public Patient(String firstName, String lastName, String middleName,
+    public Patient(String id, String firstName, String lastName, String middleName,
                    String birthDate, String phoneNumber, String diagnosis,
-                   String room, String admissionDate,ArrayList<String> allergies,
-                   ArrayList<String> medications, VitalSigns vitalSigns, String sex, String mainDoctor) {
+                   String room, String admissionDate, String allergies,
+                   String medications, VitalSigns vitalSigns, String sex, String mainDoctor) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
@@ -100,19 +99,19 @@ public class Patient {
         this.admissionDate = admissionDate;
     }
 
-    public List<String> getMedications() {
+    public String getMedications() {
         return medications;
     }
 
-    public void setMedications(ArrayList<String> medications) {
+    public void setMedications(String medications) {
         this.medications = medications;
     }
 
-    public List<String> getAllergies() {
+    public String getAllergies() {
         return allergies;
     }
 
-    public void setAllergies(ArrayList<String> allergies) {
+    public void setAllergies(String allergies) {
         this.allergies = allergies;
     }
 
@@ -131,4 +130,12 @@ public class Patient {
     public String getMainDoctor() { return mainDoctor; }
 
     public void setMainDoctor(String mainDoctor) { this.mainDoctor = mainDoctor; }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

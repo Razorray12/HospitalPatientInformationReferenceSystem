@@ -21,6 +21,8 @@ public class Doctor {
         this.patients = new ArrayList<>();
     }
 
+    public Doctor() {}
+
     public String getFirstName() {
         return firstName;
     }

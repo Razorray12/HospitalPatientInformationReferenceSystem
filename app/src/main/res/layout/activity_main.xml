@@ -39,6 +39,22 @@
             android:background="@drawable/ripple_effect"
             android:visibility="gone"/>
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/save_button2"
+            app:srcCompat="@drawable/save"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple_effect"
+            android:visibility="gone"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/back_button"
+            app:srcCompat="@drawable/back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple_effect"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/name_fragment"
             android:layout_width="wrap_content"

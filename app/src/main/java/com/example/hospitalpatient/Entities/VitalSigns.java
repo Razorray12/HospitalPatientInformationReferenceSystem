@@ -1,12 +1,12 @@
 package com.example.hospitalpatient.Entities;
 
 public class VitalSigns {
-    private String temperature;
-    private String heartRate;
-    private String respiratoryRate;
-    private String bloodPressure;
-    private String oxygenSaturation;
-    private String bloodGlucose;
+    private String temperature = null;
+    private String heartRate = null;
+    private String respiratoryRate = null;
+    private String bloodPressure = null;
+    private String oxygenSaturation = null;
+    private String bloodGlucose = null;
 
     public VitalSigns(String temperature, String heartRate, String respiratoryRate,
                       String bloodPressure, String oxygenSaturation, String bloodGlucose) {

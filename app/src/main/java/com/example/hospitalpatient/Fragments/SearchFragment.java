@@ -10,12 +10,14 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hospitalpatient.Adapters.PatientAdapter;
 import com.example.hospitalpatient.Entities.Patient;
 import com.example.hospitalpatient.R;
+import com.example.hospitalpatient.ViewModels.PatientViewModel;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
     private boolean isDoctor = false;
+    private OnFragmentSwitchListener fragmentSwitchListener;
     RecyclerView recyclerView;
     DatabaseReference database;
     PatientAdapter patientAdapter;
@@ -54,6 +57,17 @@ public class SearchFragment extends Fragment {
         patients = new ArrayList<>();
 
         patientAdapter = new PatientAdapter(getContext(),patients);
+
+        patientAdapter.setOnItemClickListener(position -> {
+            if (fragmentSwitchListener != null) {
+                Patient clickedPatient = patients.get(position);
+                PatientViewModel patientViewModel = new ViewModelProvider(requireActivity()).get(PatientViewModel.class);
+                patientViewModel.selectPatient(clickedPatient);
+
+                fragmentSwitchListener.onSwitchToInformationFragment();
+            }
+        });
+
         recyclerView.setAdapter(patientAdapter);
 
         database.addValueEventListener(new ValueEventListener() {
@@ -118,5 +132,13 @@ public class SearchFragment extends Fragment {
     public void showAllPatients() {
         patientAdapter.setPatients(patients);
         patientAdapter.notifyDataSetChanged();
+    }
+
+    public interface OnFragmentSwitchListener {
+        void onSwitchToInformationFragment();
+    }
+
+    public void setOnFragmentSwitchListener(OnFragmentSwitchListener listener) {
+        this.fragmentSwitchListener = listener;
     }
 }

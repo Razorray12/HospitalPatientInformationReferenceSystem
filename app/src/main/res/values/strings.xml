@@ -60,5 +60,7 @@
     <string name="glucose">Уровень глюкозы</string>
     <string name="medications">Лекарства</string>
     <string name="room_for_add">Палата</string>
+    <string name="delete_patient">Удалить пациента</string>
+    <string name="delete_alert_patient">Вы действительно хотите удалить информацию о пациенте?</string>
 
 </resources>
